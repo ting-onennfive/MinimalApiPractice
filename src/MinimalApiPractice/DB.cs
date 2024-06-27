@@ -1,4 +1,8 @@
-﻿public record TodoTask(int id, string description);
+﻿public record TodoTask(
+    int id, 
+    string title,
+    string description,
+    bool isCompleted = false);
 
 namespace MinimalApiPractice.DB
 {
