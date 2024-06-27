@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
+using MinimalApiPractice;
 using MinimalApiPractice.DB;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,23 +37,39 @@ app.UseAuthorization();
 app.MapGet("/to-do-task/get-by-id/{id}", (int id) =>
 {
     var todoTask = DB.GetTodoTaskById(id);
-    if (todoTask == null) return Results.NotFound();
-    return Results.Ok(value: DB.GetTodoTaskById(id));
+    if (todoTask == null) return new Result<TodoTask>(null, "資料不存在", true);
+    return new Result<TodoTask>(DB.GetTodoTaskById(id));
 })
     .WithDescription("根據待辦事項 id，取得單筆待辦事項");
 
-app.MapGet("/to-do-task/get-list", () => DB.GetTodoTasks())
+app.MapGet("/to-do-task/get-list", () => new Result<List<TodoTask>>(DB.GetTodoTasks()))
     .WithDescription("取得多筆待辦事項");
 
 app.MapPost("/to-do-task", ([FromBody] TodoTask todoTask) => 
 {
     var todoTasks = DB.GetTodoTasks();
-    if (todoTasks.Any(t => t.id == todoTask.id)) return Results.BadRequest(new { message = $"已存在重複 id：{todoTask.id}" });
+    if (todoTasks.Any(t => t.id == todoTask.id)) return new Result<TodoTask>(null, "資料重複", false);
     DB.CreateTodoTask(todoTask);
-    return Results.Ok(value: todoTask);
-});
+    return new Result<TodoTask>(todoTask, "異動成功", true);
+})
+    .WithDescription("新增待辦事項");;
 
-app.MapPut("/to-do-task", ([FromBody] TodoTask todoTask) => DB.UpdateTodoTask(todoTask));
-app.MapDelete("/to-do-task", ([FromBody] TodoTask todoTask) => DB.DeleteTodoTask(todoTask));
+app.MapPut("/to-do-task", ([FromBody] TodoTask todoTask) =>
+{
+    var targetTodoTask = DB.GetTodoTaskById(todoTask.id);
+    if (targetTodoTask == null) return new Result<TodoTask>(null, "資料不存在", true);
+    DB.UpdateTodoTask(todoTask);
+    return new Result<TodoTask>(todoTask, "異動成功", true);
+})
+    .WithDescription("編輯待辦事項");
+
+app.MapDelete("/to-do-task/{id}", (int id) =>
+{
+    var targetTodoTask = DB.GetTodoTaskById(id);
+    if (targetTodoTask == null) return new Result<TodoTask>(null, "資料不存在", true);
+    DB.DeleteTodoTask(targetTodoTask);
+    return new Result<TodoTask>(targetTodoTask, "異動成功", true);
+})
+    .WithDescription("刪除待辦事項");
 
 app.Run();
