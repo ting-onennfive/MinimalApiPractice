@@ -1,22 +1,45 @@
 @MinimalApiPractice_HostAddress = http://localhost:5296
 
-GET {{MinimalApiPractice_HostAddress}}/to-do-task/get-by-id/7
+### 根據待辦事項 id，取得單筆待辦事項
+GET {{MinimalApiPractice_HostAddress}}/to-do-task/get-by-id/1
 Accept: application/json
 
 ###
 
+### 取得多筆待辦事項
 GET {{MinimalApiPractice_HostAddress}}/to-do-task/get-list
 Accept: application/json
 
 ###
 
-POST {{MinimalApiPractice_HostAddress}}/to-do-task/
-Accept: application/json
+### 新增待辦事項
+POST {{MinimalApiPractice_HostAddress}}/to-do-task
 Content-Type: application/json
 
 {
-  "id":6,
-  "description": "the description of task 6"
+  "id": 6,
+  "title": "Sample Task",
+  "description": "This is a sample to-do task 6.",
+  "isCompleted": false
 }
 
 ###
+
+### 編輯待辦事項
+PUT {{MinimalApiPractice_HostAddress}}/to-do-task
+Content-Type: application/json
+
+{
+  "id": 1,
+  "title": "Updated Task",
+  "description": "This is an updated to-do task.",
+  "isCompleted": true
+}
+
+###
+
+### 刪除待辦事項
+DELETE {{MinimalApiPractice_HostAddress}}/to-do-task/1
+Content-Type: application/json
+
+
