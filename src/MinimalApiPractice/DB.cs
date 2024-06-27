@@ -10,11 +10,11 @@ namespace MinimalApiPractice.DB
     {
         private static List<TodoTask> _todoTasks = new List<TodoTask>()
         {
-            new TodoTask(1,"the description of task 1"),
-            new TodoTask(2,"the description of task 2"),
-            new TodoTask(3,"the description of task 3"),
-            new TodoTask(4,"the description of task 4"),
-            new TodoTask(5,"the description of task 5"),
+            new TodoTask(1,"title 1","the description of task 1"),
+            new TodoTask(2,"title 2","the description of task 2"),
+            new TodoTask(3,"title 3","the description of task 3"),
+            new TodoTask(4,"title 4","the description of task 4"),
+            new TodoTask(5,"title 5","the description of task 5"),
         };
 
         public static List<TodoTask> GetTodoTasks()
